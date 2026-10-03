@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# 例外：模板文件只含占位符，必须能提交，否则别人无法复现环境
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +41,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# database —— SQLite 数据库文件绝不能提交
+# dev.db 内含用户表与邮箱等本地数据，且二进制文件会污染仓库历史
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+prisma/dev.db
+
+# agent 工作记录（含项目内部实现细节，不对外公开）
+.workbuddy/

@@ -1,26 +1,99 @@
 @import "tailwindcss";
 
+/* next-themes 以 attribute="class" 把 .light / .dark 挂到 <html> 上。
+   Tailwind 4 必须显式声明 dark 变体，dark: 前缀才会生效。 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── 中性色轴：亮色（默认） ─────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-page: #ffffff;
+  --bg-card: #fafafa;
+  --fg: #171717;
+  --muted: #737373;
+  --line: #e5e5e5;
+  --accent: #171717;
+}
+
+/* ── 中性色轴：暗色（next-themes 加 .dark 类） ───────── */
+.dark {
+  --bg-page: #0a0a0a;
+  --bg-card: #171717;
+  --fg: #ededed;
+  --muted: #a3a3a3;
+  --line: #262626;
+  --accent: #ededed;
+}
+
+/* 无 JS 降级：html 上还没有 light/dark 类时跟随系统偏好。
+   JS 可用时 next-themes 会打上 class，此分支自动失效，不会和手动切换打架。 */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light):not(.dark) {
+    --bg-page: #0a0a0a;
+    --bg-card: #171717;
+    --fg: #ededed;
+    --muted: #a3a3a3;
+    --line: #262626;
+    --accent: #ededed;
+  }
+}
+
+/* ── 品牌色轴：只改背景与强调色，明暗完全由上面的 .dark 独立控制 ──
+   两轴正交：ocean + dark、forest + light … 组合都成立。 */
+[data-palette="ocean"] {
+  --accent: #0369a1;
+  --bg-page: #f2f9ff;
+  --bg-card: #ffffff;
+}
+[data-palette="forest"] {
+  --accent: #15803d;
+  --bg-page: #f2fdf5;
+  --bg-card: #ffffff;
+}
+[data-palette="sunset"] {
+  --accent: #c2410c;
+  --bg-page: #fff7ed;
+  --bg-card: #ffffff;
+}
+
+/* 暗色下强调色需提亮才够对比 */
+.dark[data-palette="ocean"] {
+  --accent: #38bdf8;
+  --bg-page: #061626;
+  --bg-card: #0d2237;
+}
+.dark[data-palette="forest"] {
+  --accent: #4ade80;
+  --bg-page: #041a0d;
+  --bg-card: #0c2617;
+}
+.dark[data-palette="sunset"] {
+  --accent: #fb923c;
+  --bg-page: #1f0d03;
+  --bg-card: #33170a;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-page: var(--bg-page);
+  --color-card: var(--bg-card);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  /* 兼容旧变量名 */
+  --color-background: var(--bg-page);
+  --color-foreground: var(--fg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--bg-page);
+  color: var(--fg);
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 卡片/分区沿用品牌色卡面 */
+.theme-card {
+  background: var(--bg-card);
+  border-color: var(--line);
 }
